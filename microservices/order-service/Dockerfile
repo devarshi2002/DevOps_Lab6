@@ -1,7 +1,9 @@
 FROM node:18
 WORKDIR /app
-COPY . .
+COPY package*.json ./
 RUN npm install
+COPY . .
 EXPOSE 3002
-CMD ["npm", "start"]
-# Use the official Node.js image as the base image
+CMD ["node", "index.js"]
+# Use Node.js base image
+# FROM node:18  
