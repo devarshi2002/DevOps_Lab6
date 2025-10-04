@@ -1,7 +1,20 @@
+# Use Node.js base image
 FROM node:18
+
+# Set working directory
 WORKDIR /app
-COPY . .
+
+# Copy package.json and package-lock.json first
+COPY package*.json ./
+
+# Install dependencies
 RUN npm install
+
+# Copy the rest of the source code
+COPY . .
+
+# Expose port (match your app)
 EXPOSE 3001
-CMD ["npm", "start"]
-# Use the official Node.js image as the base image
+
+# Run the application
+CMD ["node", "index.js"]
