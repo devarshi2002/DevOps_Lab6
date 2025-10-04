@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('devarshi2002') // Jenkins secret ID
-        IMAGE_NAME = "devarshi2002/devops-lab6"
+        BASE_IMAGE = "devarshi2002/microservices"
     }
 
     stages {
@@ -13,13 +13,14 @@ pipeline {
             }
         }
 
-        stage('Build Combined Docker Image') {
+        stage('Build Docker Images') {
             steps {
                 script {
-                    dir('combined') {
-                        bat """
-                            docker build -t %IMAGE_NAME%:user-service -t %IMAGE_NAME%:order-service .
-                        """
+                    dir('microservices/user-service') {
+                        bat 'docker build -t %BASE_IMAGE%:user-service .'
+                    }
+                    dir('microservices/order-service') {
+                        bat 'docker build -t %BASE_IMAGE%:order-service .'
                     }
                 }
             }
@@ -30,17 +31,23 @@ pipeline {
                 script {
                     bat """
                         echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_CREDENTIALS_USR% --password-stdin
-                        docker push %IMAGE_NAME%:user-service
-                        docker push %IMAGE_NAME%:order-service
+                        docker push %BASE_IMAGE%:user-service
+                        docker push %BASE_IMAGE%:order-service
                     """
                 }
             }
         }
 
-        stage('Deploy Container') {
+        stage('Deploy Containers') {
             steps {
                 script {
-                    bat "docker run -d -p 3001:3001 -p 3002:3002 --name combined-service %IMAGE_NAME%:user-service"
+                    // Stop old containers if running
+                    bat "docker rm -f user-service || exit 0"
+                    bat "docker rm -f order-service || exit 0"
+
+                    // Run new containers
+                    bat "docker run -d -p 3001:3001 --name user-service %BASE_IMAGE%:user-service"
+                    bat "docker run -d -p 3002:3002 --name order-service %BASE_IMAGE%:order-service"
                 }
             }
         }
