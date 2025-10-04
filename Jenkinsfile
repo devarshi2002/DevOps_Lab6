@@ -17,11 +17,11 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    dir('user-service') {
+                    dir('microservices/user-service') {
                         // Windows batch uses %VAR% for env vars
                         bat 'docker build -t %USER_SERVICE_IMAGE% .'
                     }
-                    dir('order-service') {
+                    dir('microservices/order-service') {
                         bat 'docker build -t %ORDER_SERVICE_IMAGE% .'
                     }
                 }
