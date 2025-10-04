@@ -18,10 +18,10 @@ pipeline {
             steps {
                 script {
                     dir('user-service') {
-                        sh 'docker build -t $USER_SERVICE_IMAGE .'
+                        bat 'docker build -t $USER_SERVICE_IMAGE .'
                     }
                     dir('order-service') {
-                        sh 'docker build -t $ORDER_SERVICE_IMAGE .'
+                        bat 'docker build -t $ORDER_SERVICE_IMAGE .'
                     }
                 }
             }
