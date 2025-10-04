@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/devarshi2002/DevOps_Lab6.git'
+            git branch: 'main', url: 'https://github.com/devarshi2002/DevOps_Lab6.git'
             }
         }
 
